@@ -1,3 +1,23 @@
+# Package names
+packages=c("trend", "pheatmap", "OmnipathR", "tidyr", "gprofiler2", "minerva", "reshape2", "ggplot2"
+           ,"Biobase","GEOquery","monomvn","igraph","survival","Brq");
+
+# Install packages not yet installed
+installed_packages=packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+
+
+source("BL_to_csv.R");
+source("KM_analysis.R");
+source("Locate_Key_Genes.R");
+source("ODE_Bayesian_Lasso.R");
+source("PROB_GEOinstall.R");
+source("Progression_Inference.R");
+source("Time_course.R");
+source("trans_cytoscape.R");
+
 #---Read GSE7390
 Gene_Data=read.csv("Gene_GSE7390.csv");
 row.names(Gene_Data)=Gene_Data[,1];
@@ -43,7 +63,7 @@ A=apply(Data,1,mean)
 S=apply(Data,1,sd)
 D=(Data-A)/S
 dev.new()
-pheatmap(D,cluster_row=T, cluster_cols=F, clustering_distance_rows='euclidean',clustering_method = "ward.D", color = colorRampPalette(c("CornflowerBlue", "white", "firebrick3"))(200), fontsize=9, fontsize_row=6,labRow=NA, show_colnames = FALSE)
+pheatmap(D,cluster_row=T, cluster_cols=F, clustering_distance_rows='euclidean',clustering_method = "ward.D", color = colorRampPalette(c("CornflowerBlue", "white", "firebrick3"))(200), fontsize=9, fontsize_row=6,labRow=NA, show_colnames = FALSE,show_rownames=FALSE)
 
 #----Specify prior network
 library(OmnipathR)
@@ -80,15 +100,16 @@ BL3=Breast_BL;
 am=BL3$Ajacent_Matrix;
 rownames(am)=colnames(am)=TCG_names;
 sd=BL3$Standard_Deviations;
-row_id=(apply(am,1,sum)>1e-12);
-col_id=(apply(am,2,sum)>1e-12);
+row_id=(apply(abs(am),1,sum)>1e-5);
+col_id=(apply(abs(am),2,sum)>1e-5);
 am=am[row_id,col_id];
 sd=sd[row_id,col_id];
 data_melt=melt(am);
 names(data_melt)=c('Gene1','Gene2','Value');
-p=ggplot(data_melt,aes(x=Gene2,y=Gene1,size=abs(am)/sd,color=sd))+geom_point()+theme(axis.text.x = element_text(angle=90,hjust=1))+
-  ylab("Target genes")+xlab("Genes")
+p=ggplot(data_melt,aes(x=Gene2,y=Gene1,size=abs(am)/sd,color=am))+geom_point()+theme(axis.text.x = element_text(angle=90,hjust=1))+
+  ylab("Target genes")+xlab("Genes")+scale_colour_gradient(low="green",high="red");
 p
+
 
 #----Locate key genes
 Eig_scores=Locate_Key_Genes(Breast_BL,TCG_names);
@@ -104,15 +125,37 @@ p=ggplot(df, aes(reorder(trt,-outcome), outcome)) +
 p
 Time_course(Eig_scores,cut=5,TCG_series,pseudo_time);
 
+#----Prepare survival time data
+Sys.setenv(VROOM_CONNECTION_SIZE=1e8);
+my_id="GSE7390";
+gset=getGEO(my_id,GSEMatrix =TRUE, getGPL=FALSE);
+FUN7=function(strg){return(as.numeric(substring(strg,first=7)))};
+FUN8=function(strg){return(as.numeric(substring(strg,first=8)))};
+FUN9=function(strg){return(as.numeric(substring(strg,first=9)))};
+
+os=as.array(gset[["GSE7390_series_matrix.txt.gz"]]@phenoData@data[["characteristics_ch1.15"]]);
+os=apply(os,1,FUN=FUN7)/365;
+eos=as.array(gset[["GSE7390_series_matrix.txt.gz"]]@phenoData@data[["characteristics_ch1.16"]]);
+eos=apply(eos,1,FUN7);
+rfs=as.array(gset[["GSE7390_series_matrix.txt.gz"]]@phenoData@data[["characteristics_ch1.13"]]);
+rfs=apply(rfs,1,FUN=FUN8)/365;
+erfs=as.array(gset[["GSE7390_series_matrix.txt.gz"]]@phenoData@data[["characteristics_ch1.14"]]);
+erfs=apply(erfs,1,FUN8);
+dmfs=as.array(gset[["GSE7390_series_matrix.txt.gz"]]@phenoData@data[["characteristics_ch1.17"]]);
+dmfs=apply(dmfs,1,FUN=FUN9)/365;
+edmfs=as.array(gset[["GSE7390_series_matrix.txt.gz"]]@phenoData@data[["characteristics_ch1.18"]]);
+edmfs=apply(edmfs,1,FUN=FUN9);
+#os,rfs,dmfs: survival time data for samples with respect to overall survival, relapse free survival and distant metastasis-free survival
+#eos,erfs,edmfs: 0/1 vector for samples identifying whether corresponding events are observed
+
 #---KM analysis
 cut=1;
 top_id=names(Eig_scores);
 par(mfcol=(c(cut,3)))
 for(i in 1:cut){
-  ng=top_id[i]; 
+  ng=top_id[i]; #ng is the gene that you want to apply KM analysis.
   KM_analysis(os,eos,ng);text(4,0.4,"OS",cex=1.5);
   KM_analysis(rfs,erfs,ng);text(4,0.4,"RFS",cex=1.5);
   KM_analysis(dmfs,edmfs,ng);text(4,0.4,"DMFS",cex=1.5);
   }
-
 
