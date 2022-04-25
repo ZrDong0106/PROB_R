@@ -76,4 +76,17 @@ Time_course.R --- function to draw timecourse curve of top genes
                          
                              A plot of timecouse curves of top genes
                              
+KM_analysis.R --- function to draw survival curves and cauculate log-rank p value for surviving data of the chosen gene
+
+                         Input objects:
+                         
+                             survtime --- right censoring survival time data 
+                             
+                             event --- a 0/1 vector identifying whether corresponding events are observed for each observation
+                             
+                             gene_name --- a character string of the gene name
+                             
+                         Output objects:
+                         
+                             A plot of the survival curve
                              
