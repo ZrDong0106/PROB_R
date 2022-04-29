@@ -1,13 +1,13 @@
 # PROB_R
 R codes for PROB algorithm
 
-main.R  --- main function, containing codes in the "step-by-step details" part of the protocol
+main()  --- main function, containing codes in the "step-by-step details" part of the protocol
 
 All codes below contain executable functions required in main.R, please execute them in your R environment before analysis.
 
-PROB_GEOinstall.R --- function to download the GSE7390 dataset. The downloaded data will be saved as "GSE7390.csv" in your current working directory.
+PROB_GEOinstall() --- function to download the GSE7390 dataset. The downloaded data will be saved as "GSE7390.csv" in your current working directory.
 
-Progression_Inference.R --- function to infer the disease progression. 
+Progression_Inference() --- function to infer the disease progression. 
 
                             Input objects:
                             
@@ -26,7 +26,7 @@ Progression_Inference.R --- function to infer the disease progression.
                                  Order --- The order of each sample in the progression
                                  
                                  
-ODE_Bayesian_Lasso.R -- function to infer the GRN with ODE Bayesian Lasso method. 
+ODE_Bayesian_Lasso() -- function to infer the GRN with ODE Bayesian Lasso method. 
 
                         Input objects:
                             Data_ordered --- reordered samples against temporal progression of TCGs
@@ -46,9 +46,9 @@ ODE_Bayesian_Lasso.R -- function to infer the GRN with ODE Bayesian Lasso method
                             Standard_Deviations --- posterior standard deviation of each parameter
                             
                             
-trans_cytoscape.R, BL_to_csv.R --- functions to save the network into a .csv file
+trans_cytoscape(), BL_to_csv() --- functions to save the network into a .csv file
 
-Locate_Key_Genes.R --- function to cauculate hub scores of each TCG
+Locate_Key_Genes() --- function to cauculate hub scores of each TCG
 
                          Input objects:
                          
@@ -60,7 +60,7 @@ Locate_Key_Genes.R --- function to cauculate hub scores of each TCG
                          
                             eig_scores --- hubscores of each TCG
                             
-Time_course.R --- function to draw timecourse curve of top genes
+Time_course() --- function to draw timecourse curve of top genes
 
                          Input objects:
                          
@@ -76,7 +76,7 @@ Time_course.R --- function to draw timecourse curve of top genes
                          
                              A plot of timecouse curves of top genes
                              
-KM_analysis.R --- function to draw survival curves and cauculate log-rank p value for surviving data of the chosen gene
+KM_analysis() --- function to draw survival curves and cauculate log-rank p value for surviving data of the chosen gene
 
                          Input objects:
                          
