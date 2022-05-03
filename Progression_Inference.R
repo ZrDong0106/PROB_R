@@ -27,7 +27,7 @@ Progression_Inference=function(DATA){
   
   for (i in 1:npatient)
     for(j in 1:npatient){
-      S[i,j]=exp(-(sum((data[i]-data[j])^2))/gamma[i,j]); 
+      S[i,j]=exp(-(sum((data[,i]-data[,j])^2))/gamma[i,j]); 
       #gaussian similarity function
       
     }
