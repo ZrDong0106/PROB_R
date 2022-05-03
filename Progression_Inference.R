@@ -5,7 +5,7 @@ Progression_Inference=function(DATA){
   data=DATA[1:ngene,];
   grade=DATA[ngene+1,];
   
-  #-----Cauculate Gaussian similarity function-----
+  #-----Calculate Gaussian similarity function-----
   omega=matrix(rep(0,npatient*npatient),ncol=npatient,nrow=npatient);
   gamma=omega;S=omega;Ks=omega;
   for (i in 1:npatient)
@@ -32,7 +32,7 @@ Progression_Inference=function(DATA){
       
     }
   
-  #-----Cauculate transition matrix-----
+  #-----Calculate transition matrix-----
   D=rep(0,npatient);
   H=S;E=D;P=S;
   for(i in 1:npatient)
