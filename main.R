@@ -63,7 +63,7 @@ A=apply(Data,1,mean)
 S=apply(Data,1,sd)
 D=(Data-A)/S
 dev.new()
-pheatmap(D,cluster_row=T, cluster_cols=F, clustering_distance_rows='euclidean',clustering_method = "ward.D", color = colorRampPalette(c("CornflowerBlue", "white", "firebrick3"))(200), fontsize=9, fontsize_row=6,labRow=NA, show_colnames = FALSE,show_rownames=FALSE)
+pheatmap(D,cluster_row=T, cluster_cols=F, clustering_distance_rows='euclidean',clustering_method = "ward.D", color = colorRampPalette(c("CornflowerBlue", "white", "firebrick3"))(8), fontsize=9, fontsize_row=6,labRow=NA, show_colnames = FALSE,show_rownames=FALSE)
 
 #----Specify prior network
 library(OmnipathR)
