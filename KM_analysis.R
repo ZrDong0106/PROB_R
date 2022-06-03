@@ -1,5 +1,5 @@
 KM_analysis=function(survtime,event,gene_name){
-  gene_m=as.numeric(Gene_GSE7390[gene_name,]);
+  gene_m=as.numeric(Gene_Data[gene_name,]);
   med_m=median(gene_m);
   group_m=rep(1,length(survtime));
   group_m[gene_m>med_m]=2;
