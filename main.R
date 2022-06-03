@@ -126,6 +126,7 @@ p
 Time_course(Eig_scores,cut=5,TCG_series,pseudo_time);
 
 #----Prepare survival time data
+library(GEOquery)
 Sys.setenv(VROOM_CONNECTION_SIZE=1e8);
 my_id="GSE7390";
 gset=getGEO(my_id,GSEMatrix =TRUE, getGPL=FALSE);
